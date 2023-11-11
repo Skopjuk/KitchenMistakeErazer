@@ -1,9 +1,9 @@
 package main
 
 import (
-	"KitchenMistakeErazer/backend/configs"
 	"KitchenMistakeErazer/backend/container"
 	"KitchenMistakeErazer/backend/server"
+	"KitchenMistakeErazer/configs"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,9 +19,9 @@ func main() {
 
 	containerInstance := container.NewContainer(config, logging)
 
-	logrus.Info("http server starting")
+	logging.Info("http server starting")
 	err = server.Run(config.Port, *containerInstance)
 	if err != nil {
-		logrus.Fatalf("error occured while running http server: %s, address: %s", err.Error(), config.Port)
+		logging.Fatalf("error occured while running http server: %s, address: %s", err.Error(), config.Port)
 	}
 }

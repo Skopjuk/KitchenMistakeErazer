@@ -2,6 +2,7 @@ package server
 
 import (
 	"KitchenMistakeErazer/backend/container"
+	"KitchenMistakeErazer/backend/handlers/users"
 	"context"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -20,6 +21,7 @@ func Run(port string, containerInstance container.Container) error {
 }
 
 func routes(e *echo.Echo, container container.Container) {
+	users.NewUsersHandler(&container).SetRoutes(e.Group("/user"))
 }
 
 func (s *Server) Shutdown(ctx context.Context) error {

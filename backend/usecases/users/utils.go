@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-	"net/mail"
+	"regexp"
 )
 
 type UserAttributes struct {
@@ -15,6 +15,7 @@ type UserAttributes struct {
 }
 
 func ParametersValidation(attributes UserAttributes) (err error) {
+	emailRegEx := `^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`
 	if len(attributes.FirstName) < 2 {
 		return errors.New("first name is too short")
 	} else if len(attributes.FirstName) > 50 {
@@ -23,7 +24,7 @@ func ParametersValidation(attributes UserAttributes) (err error) {
 		return errors.New("last name is too short")
 	} else if len(attributes.LastName) > 50 {
 		return errors.New("last name is too long")
-	} else if _, err = mail.ParseAddress(attributes.Email); err != nil {
+	} else if !regexp.MustCompile(emailRegEx).MatchString(attributes.Email) {
 		return errors.New("email is not valid")
 	} else if len(attributes.Password) < 6 {
 		return errors.New("password is too short")
