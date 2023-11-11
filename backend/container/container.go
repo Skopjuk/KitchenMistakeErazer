@@ -1,7 +1,7 @@
 package container
 
 import (
-	"KitchenMistakeErazer/configs"
+	"KitchenMistakeErazer/backend/configs"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 )

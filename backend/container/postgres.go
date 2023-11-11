@@ -1,7 +1,7 @@
 package container
 
 import (
-	"KitchenMistakeErazer/configs"
+	"KitchenMistakeErazer/backend/configs"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"KitchenMistakeErazer/configs"
-	"KitchenMistakeErazer/container"
-	"KitchenMistakeErazer/server"
+	"KitchenMistakeErazer/backend/configs"
+	"KitchenMistakeErazer/backend/container"
+	"KitchenMistakeErazer/backend/server"
 	"github.com/sirupsen/logrus"
 )
 
