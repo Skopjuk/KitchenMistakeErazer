@@ -17,3 +17,7 @@ type UpdatePassword interface {
 type DeleteUser interface {
 	DeleteUser(id int) (err error)
 }
+
+type ShowAllUsers interface {
+	ShowAllUsers(skip, paginationLimit string) (usersList []models.User, err error)
+}

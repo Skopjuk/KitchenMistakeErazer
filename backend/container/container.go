@@ -14,9 +14,8 @@ type Container struct {
 
 func NewContainer(config configs.Config, logging *logrus.Logger) *Container {
 	db, err := NewPostgresDB(config)
-
 	if err != nil {
-		logrus.Fatalf("cannot connect to db: %s", err.Error())
+		logging.Fatalf("cannot connect to db: %s", err.Error())
 	}
 
 	return &Container{Config: config,

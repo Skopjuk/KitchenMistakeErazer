@@ -6,7 +6,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 	"strings"
+)
+
+var (
+	paginationLimit = "10"
 )
 
 type SignUpParams struct {
@@ -58,4 +63,31 @@ func (u *UsersHandler) SignUp(c echo.Context) error {
 
 	return nil
 
+}
+
+func (u *UsersHandler) GetAllUsers(c echo.Context) error {
+	pageNum := c.QueryParam("page")
+	if pageNum == "" {
+		pageNum = "1"
+	}
+
+	page, err := strconv.Atoi(pageNum)
+	if err != nil {
+		logrus.Errorf("error while converting page number to int: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "error while parsing url",
+		})
+	}
+
+	skip := strconv.Itoa((page - 1) * 10)
+	logrus.Info("attempt to get users list from db")
+
+	usersRepository := user.NewUsersRepository(u.container.DB)
+	getAll := users.NewShowUsers(usersRepository)
+
+	users, err := getAll.Execute(skip, paginationLimit)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"user": users,
+	})
 }

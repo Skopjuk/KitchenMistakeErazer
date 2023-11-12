@@ -24,3 +24,14 @@ func (u *UsersRepository) InsertUser(user models.User) error {
 
 	return nil
 }
+
+func (u *UsersRepository) ShowAllUsers(skip, paginationLimit string) (usersList []models.User, err error) {
+	query := "SELECT * FROM kitchen_users LIMIT $1 OFFSET $2"
+	err = u.db.Select(&usersList, query, paginationLimit, skip)
+
+	if err != nil {
+		logrus.Errorf("error while selecting users from kitchen_users table: %s", err)
+	}
+
+	return usersList, err
+}
