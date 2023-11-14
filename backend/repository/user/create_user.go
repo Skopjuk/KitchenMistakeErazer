@@ -35,3 +35,23 @@ func (u *UsersRepository) ShowAllUsers(skip, paginationLimit string) (usersList 
 
 	return usersList, err
 }
+
+func (u *UsersRepository) UpdateUser(user models.User, id int) (err error) {
+	query := "UPDATE kitchen_users SET first_name=$1, last_name=$2, email=$3 WHERE id=$4"
+	_, err = u.db.Query(query, user.FirstName, user.LastName, user.Email, id)
+	if err != nil {
+		logrus.Errorf("query problem: %s", err)
+	}
+
+	return err
+}
+
+func (u *UsersRepository) GetUserById(id int) (user models.User, err error) {
+	query := "SELECT * FROM kitchen_users WHERE id=$1"
+	err = u.db.Get(&user, query, id)
+	if err != nil {
+		logrus.Errorf("user with id %d wasn't found, with error: %s", id, err)
+	}
+
+	return user, err
+}

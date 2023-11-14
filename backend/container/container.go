@@ -1,15 +1,17 @@
 package container
 
 import (
+	"KitchenMistakeErazer/backend/repository/user"
 	"KitchenMistakeErazer/configs"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 )
 
 type Container struct {
-	Config  configs.Config
-	DB      *sqlx.DB
-	Logging *logrus.Logger
+	Config          configs.Config
+	DB              *sqlx.DB
+	Logging         *logrus.Logger
+	UsersRepository *user.UsersRepository
 }
 
 func NewContainer(config configs.Config, logging *logrus.Logger) *Container {

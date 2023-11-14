@@ -3,6 +3,7 @@ package users
 import (
 	"KitchenMistakeErazer/backend/repository/user"
 	"KitchenMistakeErazer/backend/usecases/users"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -19,6 +20,12 @@ type SignUpParams struct {
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
+}
+
+type UserUpdateParams struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
 }
 
 func (u *UsersHandler) SignUp(c echo.Context) error {
@@ -90,4 +97,61 @@ func (u *UsersHandler) GetAllUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"user": users,
 	})
+}
+
+func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
+	var input users.UpdateUserAttributes
+
+	idInt, err := getIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
+		})
+	}
+
+	if err := c.Bind(&input); err != nil {
+		logrus.Errorf("failed to bind req body: %s", err)
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	newGetUserById := users.NewGetUserByID(u.container.UsersRepository)
+	_, err = newGetUserById.Execute(idInt)
+	if err != nil {
+		logrus.Errorf("problem wile inserting user: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("problem wile inserting user: %s", err),
+		})
+	}
+
+	newUpdateProfile := users.NewUpdateUserProfile(u.container.UsersRepository)
+	err = newUpdateProfile.Execute(input, idInt)
+	if err != nil {
+		logrus.Errorf("can not execute usecase: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	err = c.JSON(http.StatusOK, map[string]interface{}{
+		"user": input.Email,
+	})
+	if err != nil {
+		logrus.Errorf("troubles with sending http status: %s", err)
+	}
+
+	return err
+}
+
+func getIdFromEndpoint(c echo.Context) (int, error) {
+	id := c.Param("id")
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		logrus.Errorf("error of converting id to int. id: %s", id)
+		return 0, c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("id %d can not be parsed", idInt),
+		})
+	}
+
+	return idInt, nil
 }

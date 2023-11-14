@@ -21,3 +21,7 @@ type DeleteUser interface {
 type ShowAllUsers interface {
 	ShowAllUsers(skip, paginationLimit string) (usersList []models.User, err error)
 }
+
+type GetUserById interface {
+	GetUserById(id int) (user models.User, err error)
+}
