@@ -114,16 +114,24 @@ func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	newGetUserById := users.NewGetUserByID(u.container.UsersRepository)
-	_, err = newGetUserById.Execute(idInt)
+	usersRepository := user.NewUsersRepository(u.container.DB)
+	newGetUserById := users.NewGetUserByID(usersRepository)
+	result, err := newGetUserById.Execute(idInt)
 	if err != nil {
-		logrus.Errorf("problem wile inserting user: %s", err)
+		logrus.Errorf("problem while extracting user from DB: %s", err)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": fmt.Sprintf("problem wile inserting user: %s", err),
+			"error": fmt.Sprintf("problem while extracting user from DB: %s", err),
 		})
 	}
 
-	newUpdateProfile := users.NewUpdateUserProfile(u.container.UsersRepository)
+	if result.FirstName == "" {
+		logrus.Errorf(fmt.Sprintf("user with id %d wasn't found", idInt))
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": fmt.Sprintf("user with id %d wasn't found", idInt),
+		})
+	}
+
+	newUpdateProfile := users.NewUpdateUserProfile(usersRepository)
 	err = newUpdateProfile.Execute(input, idInt)
 	if err != nil {
 		logrus.Errorf("can not execute usecase: %s", err)
