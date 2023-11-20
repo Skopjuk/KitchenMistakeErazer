@@ -55,3 +55,13 @@ func (u *UsersRepository) GetUserById(id int) (user models.User, err error) {
 
 	return user, err
 }
+
+func (u *UsersRepository) DeleteUser(id int) (err error) {
+	query := "DELETE FROM kitchen_users WHERE id=$1"
+	_, err = u.db.Query(query, id)
+	if err != nil {
+		logrus.Errorf("deletion of user with id %d was unseccessful: %s", id, err)
+	}
+
+	return err
+}

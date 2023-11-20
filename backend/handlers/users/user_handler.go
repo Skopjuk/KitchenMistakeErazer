@@ -150,6 +150,35 @@ func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
 	return err
 }
 
+func (u *UsersHandler) DeleteUser(c echo.Context) error {
+	idInt, err := getIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
+		})
+	}
+
+	usersRepository := user.NewUsersRepository(u.container.DB)
+	newGetUserById := users.NewGetUserByID(usersRepository)
+	_, err = newGetUserById.Execute(idInt)
+	if err != nil {
+		logrus.Errorf("problem while extracting user from DB: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("problem while extracting user from DB: %s", err),
+		})
+	}
+
+	newDeleteUser := users.NewDeleteUserProfile(usersRepository)
+	err = newDeleteUser.Execute(idInt)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("user deletion useccessful: %s", err),
+		})
+	}
+
+	return err
+}
+
 func getIdFromEndpoint(c echo.Context) (int, error) {
 	id := c.Param("id")
 
