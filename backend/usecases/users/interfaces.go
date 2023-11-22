@@ -11,7 +11,7 @@ type UpdateUser interface {
 }
 
 type UpdatePassword interface {
-	UpdatePassword(password string, id int) (err error)
+	UpdatePassword(password []byte, id int) (err error)
 }
 
 type DeleteUser interface {

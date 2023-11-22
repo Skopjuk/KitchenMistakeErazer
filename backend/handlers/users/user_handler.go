@@ -28,6 +28,10 @@ type UserUpdateParams struct {
 	Email     string `json:"email"`
 }
 
+type PasswordUpdateAttributes struct {
+	Password string `json:"password,omitempty"`
+}
+
 func (u *UsersHandler) SignUp(c echo.Context) error {
 	var input SignUpParams //треба спробуавти одразу розпарсити в users.UserAttributes
 	if err := c.Bind(&input); err != nil {
@@ -177,6 +181,44 @@ func (u *UsersHandler) DeleteUser(c echo.Context) error {
 	}
 
 	return err
+}
+
+func (u *UsersHandler) UpdateUsersPassword(c echo.Context) error {
+	var input PasswordUpdateAttributes
+	idInt, err := getIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
+		})
+	}
+
+	usersRepository := user.NewUsersRepository(u.container.DB)
+	newGetUserById := users.NewGetUserByID(usersRepository)
+	_, err = newGetUserById.Execute(idInt)
+	if err != nil {
+		logrus.Errorf("problem while extracting user from DB: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("problem while extracting user from DB: %s", err),
+		})
+	}
+
+	if err := c.Bind(&input); err != nil {
+		logrus.Errorf("failed to bind req body: %s", err)
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	newUpdateUsersPassword := users.NewChangePassword(usersRepository)
+	err = newUpdateUsersPassword.Execute(idInt, input.Password)
+	if err != nil {
+		logrus.Errorf("user password wasn't updated: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("user password wasn't updated: %s", err),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "password changed successfully",
+	})
 }
 
 func getIdFromEndpoint(c echo.Context) (int, error) {

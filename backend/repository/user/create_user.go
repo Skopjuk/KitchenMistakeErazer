@@ -65,3 +65,13 @@ func (u *UsersRepository) DeleteUser(id int) (err error) {
 
 	return err
 }
+
+func (u *UsersRepository) UpdatePassword(password []byte, id int) (err error) {
+	query := "UPDATE kitchen_users SET password=$1 WHERE id=$2"
+	_, err = u.db.Query(query, password, id)
+	if err != nil {
+		logrus.Errorf("password changing was unseccessful: %s", err)
+	}
+
+	return err
+}
