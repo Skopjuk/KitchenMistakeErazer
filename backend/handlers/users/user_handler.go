@@ -1,7 +1,7 @@
 package users
 
 import (
-	"KitchenMistakeErazer/backend/repository/user"
+	"KitchenMistakeErazer/backend/repository"
 	"KitchenMistakeErazer/backend/usecases/users"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -41,7 +41,7 @@ func (u *UsersHandler) SignUp(c echo.Context) error {
 		})
 	}
 
-	usersRepository := user.NewUsersRepository(u.container.DB)
+	usersRepository := repository.NewUsersRepository(u.container.DB)
 	createProfile := users.NewCreateUserProfile(usersRepository)
 
 	userInsertingParams := users.UserAttributes{
@@ -93,7 +93,7 @@ func (u *UsersHandler) GetAllUsers(c echo.Context) error {
 	skip := strconv.Itoa((page - 1) * 10)
 	logrus.Info("attempt to get users list from db")
 
-	usersRepository := user.NewUsersRepository(u.container.DB)
+	usersRepository := repository.NewUsersRepository(u.container.DB)
 	getAll := users.NewShowUsers(usersRepository)
 
 	users, err := getAll.Execute(skip, paginationLimit)
@@ -118,7 +118,7 @@ func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	usersRepository := user.NewUsersRepository(u.container.DB)
+	usersRepository := repository.NewUsersRepository(u.container.DB)
 	newGetUserById := users.NewGetUserByID(usersRepository)
 	result, err := newGetUserById.Execute(idInt)
 	if err != nil {
@@ -162,7 +162,7 @@ func (u *UsersHandler) DeleteUser(c echo.Context) error {
 		})
 	}
 
-	usersRepository := user.NewUsersRepository(u.container.DB)
+	usersRepository := repository.NewUsersRepository(u.container.DB)
 	newGetUserById := users.NewGetUserByID(usersRepository)
 	_, err = newGetUserById.Execute(idInt)
 	if err != nil {
@@ -192,7 +192,7 @@ func (u *UsersHandler) UpdateUsersPassword(c echo.Context) error {
 		})
 	}
 
-	usersRepository := user.NewUsersRepository(u.container.DB)
+	usersRepository := repository.NewUsersRepository(u.container.DB)
 	newGetUserById := users.NewGetUserByID(usersRepository)
 	_, err = newGetUserById.Execute(idInt)
 	if err != nil {

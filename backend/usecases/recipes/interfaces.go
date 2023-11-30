@@ -1,0 +1,19 @@
+package recipes
+
+import "KitchenMistakeErazer/backend/models"
+
+type InsertRecipe interface {
+	InsertRecipe(recipe models.Recipe) (err error)
+}
+
+type UpdateRecipe interface {
+	UpdateRecipe(recipe models.Recipe, id int) (err error)
+}
+
+type DeleteRecipe interface {
+	DeleteRecipe(id int) (err error)
+}
+
+type ShowRecipeByUserId interface {
+	ShowRecipeByUserId(userId int) (recipe models.Recipe)
+}
