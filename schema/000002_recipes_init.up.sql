@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS recipe_versions
     fat int,
     protein int,
     carbs int,
-    nutritious_id bigint,
     created_at              timestamp not null default current_timestamp,
     updated_at              timestamp not null default current_timestamp,
     constraint fk_user_id
@@ -25,7 +24,6 @@ CREATE TABLE IF NOT EXISTS recipes
 (
         id serial primary key,
         recipe_name varchar,
-        kitchen_user_id bigint,
         description varchar,
         recipe_version_id bigint,
         sourness int,
@@ -37,7 +35,6 @@ CREATE TABLE IF NOT EXISTS recipes
         fat int,
         protein int,
         carbs int,
-        nutritious_id bigint,
         created_at              timestamp not null default current_timestamp,
         updated_at              timestamp not null default current_timestamp,
         constraint fk_recipe_version_id

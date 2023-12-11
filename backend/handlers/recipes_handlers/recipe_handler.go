@@ -6,7 +6,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 	"strings"
+)
+
+var (
+	paginationLimit = "10"
 )
 
 type AddRecipeParams struct {
@@ -70,4 +75,31 @@ func (r *RecipesHandler) AddRecipe(c echo.Context) error {
 	})
 
 	return nil
+}
+
+func (r *RecipesHandler) GetAllRecipes(c echo.Context) error {
+	pageNum := c.QueryParam("page")
+	if pageNum == "" {
+		pageNum = "1"
+	}
+
+	page, err := strconv.Atoi(pageNum)
+	if err != nil {
+		logrus.Errorf("error while converting page num to int: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "error while parsing url",
+		})
+	}
+
+	skip := strconv.Itoa((page - 1) * 10)
+	logrus.Info("attempt to get users list from db")
+
+	recipesRepository := repository.NewRecipesRepository(r.container.DB)
+	getAll := recipes.NewGetAllRecipes(recipesRepository)
+
+	recipes := getAll.Execute(skip, paginationLimit)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"recipes": recipes,
+	})
 }

@@ -15,4 +15,5 @@ func NewRecipesHandler(container *container.Container) *RecipesHandler {
 
 func (r *RecipesHandler) SetRoutes(g *echo.Group) {
 	g.POST("/", r.AddRecipe)
+	g.GET("/all", r.GetAllRecipes)
 }

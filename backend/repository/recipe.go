@@ -23,3 +23,13 @@ func (r *RecipesRepository) InsertRecipe(recipe models.Recipe) (err error) {
 
 	return err
 }
+
+func (r *RecipesRepository) ShowAllRecipes(skip, paginationLimit string) (recipes []models.Recipe) {
+	query := "SELECT * FROM recipes LIMIT $1 OFFSET $2"
+	err := r.db.Select(&recipes, query, paginationLimit, skip)
+	if err != nil {
+		logrus.Errorf("error while extracting recipes list from db: %s", err)
+	}
+
+	return recipes
+}

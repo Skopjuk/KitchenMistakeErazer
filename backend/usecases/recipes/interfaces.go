@@ -17,3 +17,11 @@ type DeleteRecipe interface {
 type ShowRecipeByUserId interface {
 	ShowRecipeByUserId(userId int) (recipe models.Recipe)
 }
+
+type ShowRecipeByRecipeId interface {
+	ShowRecipeByRecipeId(recipeId int) (recipe models.Recipe)
+}
+
+type ShowAllRecipes interface {
+	ShowAllRecipes(skip, paginationLimit string) (recipes []models.Recipe)
+}
