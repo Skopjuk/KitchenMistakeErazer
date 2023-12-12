@@ -2,30 +2,33 @@ package recipes
 
 import (
 	"KitchenMistakeErazer/backend/models"
+	recipe_version "KitchenMistakeErazer/backend/usecases/recipe_version"
 	"errors"
 )
 
 type CreateRecipe struct {
-	repository InsertRecipe
+	repository              InsertRecipe
+	repositoryRecipeVersion recipe_version.InsertRecipeToRecipeVersion
 }
 
-func NewCreateRecipe(repository InsertRecipe) *CreateRecipe {
-	return &CreateRecipe{repository: repository}
+func NewCreateRecipe(repository InsertRecipe, repositoryRecipeVersion recipe_version.InsertRecipeToRecipeVersion) *CreateRecipe {
+	return &CreateRecipe{repository: repository, repositoryRecipeVersion: repositoryRecipeVersion}
 }
 
 type RecipeAttributes struct {
-	RecipeName  string
-	Description string
-	UserId      uint
-	Sourness    uint
-	Saltiness   uint
-	Acidity     uint
-	Sweetness   uint
-	Hot         uint
-	Calories    uint
-	Fat         uint
-	Protein     uint
-	Carbs       uint
+	RecipeName      string
+	Description     string
+	UserId          uint
+	RecipeVersionId uint
+	Sourness        uint
+	Saltiness       uint
+	Acidity         uint
+	Sweetness       uint
+	Hot             uint
+	Calories        uint
+	Fat             uint
+	Protein         uint
+	Carbs           uint
 }
 
 func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
@@ -34,20 +37,25 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 		return err
 	}
 
-	err = c.repository.InsertRecipe(models.Recipe{
-		RecipeName:  attributes.RecipeName,
-		Description: attributes.Description,
-		UserId:      attributes.UserId,
-		Sourness:    attributes.Sourness,
-		Saltiness:   attributes.Saltiness,
-		Acidity:     attributes.Acidity,
-		Sweetness:   attributes.Sweetness,
-		Hot:         attributes.Hot,
-		Calories:    attributes.Calories,
-		Fat:         attributes.Fat,
-		Protein:     attributes.Protein,
-		Carbs:       attributes.Carbs,
-	})
+	recipe := models.Recipe{
+		RecipeName:      attributes.RecipeName,
+		Description:     attributes.Description,
+		UserId:          attributes.UserId,
+		RecipeVersionId: int(attributes.RecipeVersionId),
+		Sourness:        attributes.Sourness,
+		Saltiness:       attributes.Saltiness,
+		Acidity:         attributes.Acidity,
+		Sweetness:       attributes.Sweetness,
+		Hot:             attributes.Hot,
+		Calories:        attributes.Calories,
+		Fat:             attributes.Fat,
+		Protein:         attributes.Protein,
+		Carbs:           attributes.Carbs,
+	}
+
+	err = c.repository.InsertRecipe(recipe)
+
+	c.repositoryRecipeVersion.InsertRecipeVersion(recipe)
 
 	return err
 }

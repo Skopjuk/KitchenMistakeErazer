@@ -15,18 +15,19 @@ var (
 )
 
 type AddRecipeParams struct {
-	RecipeName  string `json:"recipe_name"`
-	Description string `json:"description"`
-	UserId      uint   `json:"user_id"`
-	Sourness    uint   `json:"sourness"`
-	Saltiness   uint   `json:"saltiness"`
-	Acidity     uint   `json:"acidity"`
-	Sweetness   uint   `json:"sweetness"`
-	Hot         uint   `json:"hot"`
-	Calories    uint   `json:"calories"`
-	Fat         uint   `json:"fat"`
-	Protein     uint   `json:"protein"`
-	Carbs       uint   `json:"carbs"`
+	RecipeName      string `json:"recipe_name"`
+	Description     string `json:"description"`
+	UserId          uint   `json:"user_id"`
+	RecipeVersionId uint   `json:"recipe_version_id"`
+	Sourness        uint   `json:"sourness"`
+	Saltiness       uint   `json:"saltiness"`
+	Acidity         uint   `json:"acidity"`
+	Sweetness       uint   `json:"sweetness"`
+	Hot             uint   `json:"hot"`
+	Calories        uint   `json:"calories"`
+	Fat             uint   `json:"fat"`
+	Protein         uint   `json:"protein"`
+	Carbs           uint   `json:"carbs"`
 }
 
 func (r *RecipesHandler) AddRecipe(c echo.Context) error {
@@ -41,20 +42,22 @@ func (r *RecipesHandler) AddRecipe(c echo.Context) error {
 	logrus.Info(input.RecipeName)
 
 	recipeRepository := repository.NewRecipesRepository(r.container.DB)
-	newAddRecipe := recipes.NewCreateRecipe(recipeRepository)
+	recipeVersionRepository := repository.NewRecipeVersionRepository(r.container.DB)
+	newAddRecipe := recipes.NewCreateRecipe(recipeRepository, recipeVersionRepository)
 	err := newAddRecipe.Execute(recipes.RecipeAttributes{
-		RecipeName:  input.RecipeName,
-		Description: input.Description,
-		UserId:      input.UserId,
-		Sourness:    input.Sourness,
-		Saltiness:   input.Saltiness,
-		Acidity:     input.Acidity,
-		Sweetness:   input.Sweetness,
-		Hot:         input.Hot,
-		Calories:    input.Calories,
-		Fat:         input.Fat,
-		Protein:     input.Protein,
-		Carbs:       input.Carbs,
+		RecipeName:      input.RecipeName,
+		Description:     input.Description,
+		UserId:          input.UserId,
+		RecipeVersionId: input.RecipeVersionId,
+		Sourness:        input.Sourness,
+		Saltiness:       input.Saltiness,
+		Acidity:         input.Acidity,
+		Sweetness:       input.Sweetness,
+		Hot:             input.Hot,
+		Calories:        input.Calories,
+		Fat:             input.Fat,
+		Protein:         input.Protein,
+		Carbs:           input.Carbs,
 	})
 
 	if err != nil {
