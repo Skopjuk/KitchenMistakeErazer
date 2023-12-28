@@ -3,6 +3,7 @@ package recipes_handlers
 import (
 	"KitchenMistakeErazer/backend/repository"
 	"KitchenMistakeErazer/backend/usecases/recipes"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -14,7 +15,7 @@ var (
 	paginationLimit = "10"
 )
 
-type AddRecipeParams struct {
+type RecipeParams struct {
 	RecipeName      string `json:"recipe_name"`
 	Description     string `json:"description"`
 	UserId          uint   `json:"user_id"`
@@ -31,7 +32,7 @@ type AddRecipeParams struct {
 }
 
 func (r *RecipesHandler) AddRecipe(c echo.Context) error {
-	var input AddRecipeParams
+	var input RecipeParams
 	if err := c.Bind(&input); err != nil {
 		logrus.Errorf("error while binding recipe: %s", err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -105,4 +106,67 @@ func (r *RecipesHandler) GetAllRecipes(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"recipes": recipes,
 	})
+}
+
+func (r *RecipesHandler) UpdateRecipe(c echo.Context) error {
+	idInt, err := getIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
+		})
+	}
+
+	var input RecipeParams
+	if err := c.Bind(&input); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "recipe wasn't parsed successfully",
+		})
+	}
+
+	recipeRepository := repository.NewRecipesRepository(r.container.DB)
+	recipeVersionRepository := repository.NewRecipeVersionRepository(r.container.DB)
+
+	newUpdateRecipe := recipes.NewChangeRecipe(recipeRepository, *recipeVersionRepository)
+	err = newUpdateRecipe.Execute(recipes.RecipeAttributes{
+		RecipeName:      input.RecipeName,
+		Description:     input.Description,
+		UserId:          input.UserId,
+		RecipeVersionId: input.RecipeVersionId,
+		Sourness:        input.Sourness,
+		Saltiness:       input.Saltiness,
+		Acidity:         input.Acidity,
+		Sweetness:       input.Sweetness,
+		Hot:             input.Hot,
+		Calories:        input.Calories,
+		Fat:             input.Fat,
+		Protein:         input.Protein,
+		Carbs:           input.Carbs,
+	}, idInt)
+
+	if err != nil {
+		logrus.Errorf("error while executing updating recipe params: %s", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	err = c.JSON(http.StatusOK, map[string]interface{}{
+		"updated_recipe": input,
+	})
+
+	return nil
+}
+
+func getIdFromEndpoint(c echo.Context) (int, error) {
+	id := c.Param("id")
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		logrus.Errorf("error of converting id to int. id: %s", id)
+		return 0, c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("id %d can not be parsed", idInt),
+		})
+	}
+
+	return idInt, nil
 }

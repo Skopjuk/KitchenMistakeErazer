@@ -1,0 +1,2 @@
+docker exec -it 4eaccb342014 /bin/bash
+psql -U postgres kitchen_users

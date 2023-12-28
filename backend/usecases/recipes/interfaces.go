@@ -3,7 +3,7 @@ package recipes
 import "KitchenMistakeErazer/backend/models"
 
 type InsertRecipe interface {
-	InsertRecipe(recipe models.Recipe) (err error)
+	InsertRecipe(recipe models.Recipe) (id int, err error)
 }
 
 type UpdateRecipe interface {

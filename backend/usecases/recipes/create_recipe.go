@@ -31,8 +31,25 @@ type RecipeAttributes struct {
 	Carbs           uint
 }
 
+type RecipeVersionAttributes struct {
+	RecipeName      string
+	Description     string
+	UserId          uint
+	RecipeVersionId uint
+	RecipeId        uint
+	Sourness        uint
+	Saltiness       uint
+	Acidity         uint
+	Sweetness       uint
+	Hot             uint
+	Calories        uint
+	Fat             uint
+	Protein         uint
+	Carbs           uint
+}
+
 func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
-	err = checkIfRecipeAttributesValid(attributes)
+	err = CheckIfRecipeAttributesValid(attributes)
 	if err != nil {
 		return err
 	}
@@ -41,7 +58,7 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 		RecipeName:      attributes.RecipeName,
 		Description:     attributes.Description,
 		UserId:          attributes.UserId,
-		RecipeVersionId: int(attributes.RecipeVersionId),
+		RecipeVersionId: 1,
 		Sourness:        attributes.Sourness,
 		Saltiness:       attributes.Saltiness,
 		Acidity:         attributes.Acidity,
@@ -53,14 +70,14 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 		Carbs:           attributes.Carbs,
 	}
 
-	err = c.repository.InsertRecipe(recipe)
+	id, err := c.repository.InsertRecipe(recipe)
 
-	c.repositoryRecipeVersion.InsertRecipeVersion(recipe)
+	c.repositoryRecipeVersion.InsertRecipeVersion(recipe, id)
 
 	return err
 }
 
-func checkIfRecipeAttributesValid(attributes RecipeAttributes) (err error) {
+func CheckIfRecipeAttributesValid(attributes RecipeAttributes) (err error) {
 	if len(attributes.RecipeName) < 2 {
 		return errors.New("recipe name should be at least 2 symbols")
 	} else if len(attributes.RecipeName) > 250 {
