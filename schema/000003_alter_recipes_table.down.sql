@@ -1,0 +1,1 @@
+ALTER TABLE recipes DROP column user_id;

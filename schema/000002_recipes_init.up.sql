@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS recipe_versions
         foreign key(user_id)
             references kitchen_users(id),
     constraint fk_recipe_id
-        foreign key(id)
+        foreign key(recipe_id)
             references recipes(id)
 );
 

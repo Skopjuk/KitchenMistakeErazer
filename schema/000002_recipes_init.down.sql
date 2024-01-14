@@ -1,2 +1,2 @@
-DROP TABLE recipes;
 DROP TABLE recipe_versions;
+DROP TABLE recipes;

@@ -125,7 +125,6 @@ func (r *RecipesHandler) UpdateRecipe(c echo.Context) error {
 
 	recipeRepository := repository.NewRecipesRepository(r.container.DB)
 	recipeVersionRepository := repository.NewRecipeVersionRepository(r.container.DB)
-
 	newUpdateRecipe := recipes.NewChangeRecipe(recipeRepository, *recipeVersionRepository)
 	err = newUpdateRecipe.Execute(recipes.RecipeAttributes{
 		RecipeName:      input.RecipeName,
