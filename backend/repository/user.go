@@ -4,6 +4,7 @@ import (
 	"KitchenMistakeErazer/backend/models"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type UsersRepository struct {
@@ -16,7 +17,7 @@ func NewUsersRepository(db *sqlx.DB) *UsersRepository {
 
 func (u *UsersRepository) InsertUser(user models.User) error {
 	query := "INSERT INTO kitchen_users (first_name, last_name, email, password) values ($1, $2, $3, $4)"
-	_, err := u.db.Query(query, user.FirstName, user.LastName, user.Email, user.Password)
+	_, err := u.db.Query(query, user.FirstName, user.LastName, user.Email, user.PasswordDigest)
 	if err != nil {
 		logrus.Errorf("error while inserting user")
 		return err
@@ -37,8 +38,8 @@ func (u *UsersRepository) ShowAllUsers(skip, paginationLimit string) (usersList 
 }
 
 func (u *UsersRepository) UpdateUser(user models.User, id int) (err error) {
-	query := "UPDATE kitchen_users SET first_name=$1, last_name=$2, email=$3 WHERE id=$4"
-	_, err = u.db.Query(query, user.FirstName, user.LastName, user.Email, id)
+	query := "UPDATE kitchen_users SET first_name=$1, last_name=$2, email=$3, updated_at=$4 WHERE id=$5"
+	_, err = u.db.Query(query, user.FirstName, user.LastName, user.Email, time.Now(), id)
 	if err != nil {
 		logrus.Errorf("query problem: %s", err)
 	}
@@ -67,8 +68,8 @@ func (u *UsersRepository) DeleteUser(id int) (err error) {
 }
 
 func (u *UsersRepository) UpdatePassword(password []byte, id int) (err error) {
-	query := "UPDATE kitchen_users SET password=$1 WHERE id=$2"
-	_, err = u.db.Query(query, password, id)
+	query := "UPDATE kitchen_users SET password_digest=$1, updated_at=$2 WHERE id=$3"
+	_, err = u.db.Query(query, password, time.Now(), id)
 	if err != nil {
 		logrus.Errorf("password changing was unseccessful: %s", err)
 	}

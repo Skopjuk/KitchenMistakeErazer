@@ -19,10 +19,10 @@ func (c *CreateUserProfile) Execute(attributes UserAttributes) (err error) {
 	}
 
 	err = c.repository.InsertUser(models.User{
-		FirstName: attributes.FirstName,
-		LastName:  attributes.LastName,
-		Email:     attributes.Email,
-		Password:  PasswordHashing(attributes.Password),
+		FirstName:      attributes.FirstName,
+		LastName:       attributes.LastName,
+		Email:          attributes.Email,
+		PasswordDigest: PasswordHashing(attributes.Password),
 	})
 
 	return err

@@ -70,7 +70,7 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 		Carbs:           attributes.Carbs,
 	}
 
-	id, err := c.repository.InsertRecipe(recipe)
+	id, err := c.repository.InsertRecipe(recipe.Id)
 
 	c.repositoryRecipeVersion.InsertRecipeVersion(recipe, id)
 
