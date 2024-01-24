@@ -25,22 +25,24 @@ func (c *ChangeRecipe) Execute(attributes RecipeAttributes, id int) error {
 	lastRecipeVersion, err := c.recipeVersionRepository.GetLatestVersionOfRecipe(id)
 
 	recipe := models.Recipe{
-		RecipeName:      attributes.RecipeName,
-		Description:     attributes.Description,
-		UserId:          attributes.UserId,
-		RecipeVersionId: lastRecipeVersion + 1,
-		Sourness:        attributes.Sourness,
-		Saltiness:       attributes.Saltiness,
-		Acidity:         attributes.Acidity,
-		Sweetness:       attributes.Sweetness,
-		Hot:             attributes.Hot,
-		Calories:        attributes.Calories,
-		Fat:             attributes.Fat,
-		Protein:         attributes.Protein,
-		Carbs:           attributes.Carbs,
+		UserId: attributes.UserId,
 	}
 
-	err = c.recipeVersionRepository.InsertRecipeVersion(recipe, id)
+	recipeVersion := models.RecipeVersion{
+		RecipeName:  attributes.RecipeName,
+		Description: attributes.Description,
+		Sourness:    attributes.Sourness,
+		Saltiness:   attributes.Saltiness,
+		Acidity:     attributes.Acidity,
+		Sweetness:   attributes.Sweetness,
+		Hot:         attributes.Hot,
+		Calories:    attributes.Calories,
+		Fat:         attributes.Fat,
+		Protein:     attributes.Protein,
+		Carbs:       attributes.Carbs,
+	}
+
+	err = c.recipeVersionRepository.InsertRecipeVersion(recipeVersion, id, lastRecipeVersion+1)
 	if err != nil {
 		logrus.Errorf("error while inserting recipe version: %s", err)
 	}

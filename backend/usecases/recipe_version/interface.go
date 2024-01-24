@@ -3,7 +3,7 @@ package recipe_version
 import "KitchenMistakeErazer/backend/models"
 
 type InsertRecipeToRecipeVersion interface {
-	InsertRecipeVersion(recipe models.Recipe, recipeInt int) error
+	InsertRecipeVersion(recipe models.RecipeVersion, id int, lastRecipeVersion uint) error
 }
 
 type GetLatestVersionOfRecipe interface {

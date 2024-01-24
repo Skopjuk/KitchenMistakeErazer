@@ -1,1 +1,0 @@
-ALTER TABLE recipes ADD column user_id BIGINT;

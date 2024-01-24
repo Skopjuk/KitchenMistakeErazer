@@ -1,12 +1,12 @@
-CREATE TABLE IF NOT EXISTS kitchen_users
+CREATE TABLE kitchen_users
 (
-    id         serial primary key,
-    first_name  varchar(255) not null,
-    last_name  varchar(255) not null,
-    email      varchar(255) not null,
-    password   varchar(255) not null,
-    created_at timestamp not null default current_timestamp,
-    updated_at timestamp not null default current_timestamp,
-    constraint users_email_idx unique
+    id         SERIAL PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name  VARCHAR(255) NOT NULL,
+    email      VARCHAR(255) NOT NULL,
+    password_digest   VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    CONSTRAINT users_email_idx UNIQUE
         (email)
 );

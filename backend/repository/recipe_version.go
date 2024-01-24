@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type RecipeVersionRepository struct {
@@ -15,9 +16,9 @@ func NewRecipeVersionRepository(db *sqlx.DB) *RecipeVersionRepository {
 	return &RecipeVersionRepository{db: db}
 }
 
-func (r *RecipeVersionRepository) InsertRecipeVersion(recipe models.Recipe, id int) error {
-	query := "INSERT INTO recipe_versions (recipe_name, description, user_id, recipe_id, sourness, saltiness, acidity, sweetness, hot, calories, fat, protein, carbs) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)"
-	_, err := r.db.Query(query, recipe.RecipeName, recipe.Description, recipe.UserId, id, recipe.Sourness, recipe.Saltiness, recipe.Acidity, recipe.Sweetness, recipe.Hot, recipe.Calories, recipe.Fat, recipe.Protein, recipe.Carbs)
+func (r *RecipeVersionRepository) InsertRecipeVersion(recipe models.RecipeVersion, id int, lastRecipeVersion uint) error {
+	query := "INSERT INTO recipe_versions (recipe_name, description, recipe_id, recipe_version_id, sourness, saltiness, acidity, sweetness, hot, calories, fat, protein, carbs, created_at) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)"
+	_, err := r.db.Query(query, recipe.RecipeName, recipe.Description, id, lastRecipeVersion, recipe.Sourness, recipe.Saltiness, recipe.Acidity, recipe.Sweetness, recipe.Hot, recipe.Calories, recipe.Fat, recipe.Protein, recipe.Carbs, time.Now())
 	if err != nil {
 		logrus.Errorf("error while inserting recipe version: %s", err)
 	}

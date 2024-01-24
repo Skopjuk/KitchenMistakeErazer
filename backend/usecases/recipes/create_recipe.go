@@ -31,23 +31,6 @@ type RecipeAttributes struct {
 	Carbs           uint
 }
 
-type RecipeVersionAttributes struct {
-	RecipeName      string
-	Description     string
-	UserId          uint
-	RecipeVersionId uint
-	RecipeId        uint
-	Sourness        uint
-	Saltiness       uint
-	Acidity         uint
-	Sweetness       uint
-	Hot             uint
-	Calories        uint
-	Fat             uint
-	Protein         uint
-	Carbs           uint
-}
-
 func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 	err = CheckIfRecipeAttributesValid(attributes)
 	if err != nil {
@@ -55,9 +38,12 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 	}
 
 	recipe := models.Recipe{
+		UserId: attributes.UserId,
+	}
+
+	recipeVersion := models.RecipeVersion{
 		RecipeName:      attributes.RecipeName,
 		Description:     attributes.Description,
-		UserId:          attributes.UserId,
 		RecipeVersionId: 1,
 		Sourness:        attributes.Sourness,
 		Saltiness:       attributes.Saltiness,
@@ -70,9 +56,9 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 		Carbs:           attributes.Carbs,
 	}
 
-	id, err := c.repository.InsertRecipe(recipe.Id)
+	id, err := c.repository.InsertRecipe(int(recipe.UserId))
 
-	c.repositoryRecipeVersion.InsertRecipeVersion(recipe, id)
+	c.repositoryRecipeVersion.InsertRecipeVersion(recipeVersion, id, 1)
 
 	return err
 }

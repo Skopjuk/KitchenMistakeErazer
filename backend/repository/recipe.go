@@ -17,7 +17,7 @@ func NewRecipesRepository(db *sqlx.DB) *RecipesRepository {
 
 func (r *RecipesRepository) InsertRecipe(userId int) (id int, err error) {
 	query := "INSERT INTO recipes (user_id, created_at) values ($1, $2) returning id"
-	err = r.db.QueryRow(query, userId, time.Now(), time.Now()).Scan(&id)
+	err = r.db.QueryRow(query, userId, time.Now()).Scan(&id)
 	if err != nil {
 		logrus.Errorf("error while inserting recipe")
 	}
@@ -38,8 +38,8 @@ func (r *RecipesRepository) ShowAllRecipes(skip, paginationLimit string) (recipe
 }
 
 func (r *RecipesRepository) UpdateRecipe(recipe models.Recipe, id int) (err error) {
-	query := "UPDATE recipes SET recipe_name=$1, description=$2, user_id=$3, recipe_version_id=$4, sourness=$5, saltiness=$6, acidity=$7, sweetness=$8, hot=$9, calories=$10, fat=$11, protein=$12, carbs=$13, updated_at=$14 WHERE id = $15"
-	_, err = r.db.Query(query, recipe.RecipeName, recipe.Description, recipe.UserId, recipe.RecipeVersionId, recipe.Sourness, recipe.Saltiness, recipe.Acidity, recipe.Sweetness, recipe.Hot, recipe.Calories, recipe.Fat, recipe.Protein, recipe.Carbs, time.Now(), id)
+	query := "UPDATE recipes SET user_id=$1 WHERE id = $2"
+	_, err = r.db.Query(query, recipe.UserId, id)
 	if err != nil {
 		logrus.Errorf("query problem:%s", err)
 	}
