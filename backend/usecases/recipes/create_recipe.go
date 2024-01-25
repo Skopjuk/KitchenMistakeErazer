@@ -42,18 +42,18 @@ func (c *CreateRecipe) Execute(attributes RecipeAttributes) (err error) {
 	}
 
 	recipeVersion := models.RecipeVersion{
-		RecipeName:      attributes.RecipeName,
-		Description:     attributes.Description,
-		RecipeVersionId: 1,
-		Sourness:        attributes.Sourness,
-		Saltiness:       attributes.Saltiness,
-		Acidity:         attributes.Acidity,
-		Sweetness:       attributes.Sweetness,
-		Hot:             attributes.Hot,
-		Calories:        attributes.Calories,
-		Fat:             attributes.Fat,
-		Protein:         attributes.Protein,
-		Carbs:           attributes.Carbs,
+		RecipeName:          attributes.RecipeName,
+		Description:         attributes.Description,
+		RecipeVersionNumber: 1,
+		Sourness:            attributes.Sourness,
+		Saltiness:           attributes.Saltiness,
+		Acidity:             attributes.Acidity,
+		Sweetness:           attributes.Sweetness,
+		Hot:                 attributes.Hot,
+		Calories:            attributes.Calories,
+		Fat:                 attributes.Fat,
+		Protein:             attributes.Protein,
+		Carbs:               attributes.Carbs,
 	}
 
 	id, err := c.repository.InsertRecipe(int(recipe.UserId))

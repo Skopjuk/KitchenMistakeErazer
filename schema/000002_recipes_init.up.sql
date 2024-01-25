@@ -12,9 +12,9 @@ CREATE TABLE recipes
 CREATE TABLE recipe_versions
 (
     id SERIAL PRIMARY KEY,
-    recipe_name varchar,
-    description varchar,
-    recipe_version_id bigint,
+    recipe_name VARCHAR(50),
+    description VARCHAR,
+    recipe_version_number BIGINT,
     recipe_id BIGINT,
     sourness INT,
     saltiness INT,
@@ -26,7 +26,6 @@ CREATE TABLE recipe_versions
     protein INT,
     carbs INT,
     created_at              TIMESTAMP NOT NULL DEFAULT current_timestamp,
-    updated_at              TIMESTAMP NOT NULL DEFAULT current_timestamp,
     CONSTRAINT fk_recipe_id
         FOREIGN KEY (recipe_id)
             REFERENCES recipes(id)

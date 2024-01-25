@@ -19,7 +19,7 @@ type RecipeParams struct {
 	RecipeName      string `json:"recipe_name"`
 	Description     string `json:"description"`
 	UserId          uint   `json:"user_id"`
-	RecipeVersionId uint   `json:"recipe_version_id"`
+	RecipeVersionId uint   `json:"recipe_version_number"`
 	Sourness        uint   `json:"sourness"`
 	Saltiness       uint   `json:"saltiness"`
 	Acidity         uint   `json:"acidity"`
