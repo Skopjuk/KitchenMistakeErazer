@@ -169,10 +169,13 @@ func (r *RecipesHandler) DeleteRecipe(c echo.Context) error {
 	removeRecipe := recipes.NewRemoveRecipe(recipeRepository, recipeVersionRepository, recipeRepository)
 	err = removeRecipe.Execute(idInt)
 	if err != nil {
+		logrus.Errorf("recipe with id %d was not removed successfully", idInt)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": "user recipe was not delete successfully",
 		})
 	}
+
+	logrus.Infof("recipe with id %d deleted successfully", idInt)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "recipe delete successfully",

@@ -18,14 +18,10 @@ type ShowRecipeByUserId interface {
 	ShowRecipeByUserId(userId int) (recipe models.Recipe)
 }
 
-type ShowRecipeByRecipeId interface {
-	ShowRecipeByRecipeId(recipeId int) (recipe models.Recipe)
-}
-
 type ShowAllRecipes interface {
 	ShowAllRecipes(skip, paginationLimit string) (recipes []models.Recipe)
 }
 
-type CheckIfRecipeExist interface {
-	CheckIfRecipeExist(id int) (err error)
+type GetRecipe interface {
+	GetRecipe(id int) (recipe models.Recipe, err error)
 }

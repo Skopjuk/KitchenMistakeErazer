@@ -22,7 +22,7 @@ func (r *RecipesRepository) InsertRecipe(userId int) (id int, err error) {
 		logrus.Errorf("error while inserting recipe")
 	}
 
-	logrus.Info("inserted recipe id: %d", id)
+	logrus.Infof("inserted recipe id: %d", id)
 
 	return id, err
 }
@@ -57,18 +57,17 @@ func (r *RecipesRepository) DeleteRecipe(id int) (err error) {
 	return err
 }
 
-func (r *RecipesRepository) CheckIfRecipeExist(id int) (err error) {
-	var recipe models.Recipe
+func (r *RecipesRepository) GetRecipe(id int) (recipe models.Recipe, err error) {
 	query := "SELECT * FROM recipes WHERE id=$1"
 	err = r.db.Get(&recipe, query, id)
 	if err != nil {
 		logrus.Errorf("recipe %d not found", id)
-		return err
+		return recipe, err
 	}
 
 	if err != nil {
 		logrus.Errorf("checking recipe exictance error: %s", err)
 	}
 
-	return err
+	return recipe, err
 }
