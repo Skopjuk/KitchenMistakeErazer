@@ -17,4 +17,5 @@ func (r *RecipesHandler) SetRoutes(g *echo.Group) {
 	g.POST("/", r.AddRecipe)
 	g.GET("/all", r.GetAllRecipes)
 	g.PATCH("/:id", r.UpdateRecipe)
+	g.DELETE("/:id", r.DeleteRecipe)
 }

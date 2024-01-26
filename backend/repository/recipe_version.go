@@ -26,6 +26,16 @@ func (r *RecipeVersionRepository) InsertRecipeVersion(recipe models.RecipeVersio
 	return err
 }
 
+func (r *RecipeVersionRepository) DeleteRecipeVersion(id int) error {
+	query := "DELETE FROM recipe_versions WHERE recipe_id=$1"
+	_, err := r.db.Query(query, id)
+	if err != nil {
+		logrus.Errorf("error while removal of recipe: %s", err)
+	}
+
+	return err
+}
+
 func (r *RecipeVersionRepository) GetLatestVersionOfRecipe(recipeId int) (lastVersion uint, err error) {
 	var recipesV []models.RecipeVersion
 	var lastRecipe models.RecipeVersion

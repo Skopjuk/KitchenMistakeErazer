@@ -25,3 +25,7 @@ type ShowRecipeByRecipeId interface {
 type ShowAllRecipes interface {
 	ShowAllRecipes(skip, paginationLimit string) (recipes []models.Recipe)
 }
+
+type CheckIfRecipeExist interface {
+	CheckIfRecipeExist(id int) (err error)
+}

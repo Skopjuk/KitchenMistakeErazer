@@ -156,6 +156,29 @@ func (r *RecipesHandler) UpdateRecipe(c echo.Context) error {
 	return nil
 }
 
+func (r *RecipesHandler) DeleteRecipe(c echo.Context) error {
+	idInt, err := getIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "user id was not parsed from link",
+		})
+	}
+
+	recipeRepository := repository.NewRecipesRepository(r.container.DB)
+	recipeVersionRepository := repository.NewRecipeVersionRepository(r.container.DB)
+	removeRecipe := recipes.NewRemoveRecipe(recipeRepository, recipeVersionRepository, recipeRepository)
+	err = removeRecipe.Execute(idInt)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "user recipe was not delete successfully",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "recipe delete successfully",
+	})
+}
+
 func getIdFromEndpoint(c echo.Context) (int, error) {
 	id := c.Param("id")
 

@@ -30,4 +30,3 @@ CREATE TABLE recipe_versions
         FOREIGN KEY (recipe_id)
             REFERENCES recipes(id)
 );
-

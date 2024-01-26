@@ -46,3 +46,29 @@ func (r *RecipesRepository) UpdateRecipe(recipe models.Recipe, id int) (err erro
 
 	return err
 }
+
+func (r *RecipesRepository) DeleteRecipe(id int) (err error) {
+	query := "DELETE FROM recipes WHERE id=$1"
+	_, err = r.db.Query(query, id)
+	if err != nil {
+		logrus.Errorf("delete recipe query problem: %s", err)
+	}
+
+	return err
+}
+
+func (r *RecipesRepository) CheckIfRecipeExist(id int) (err error) {
+	var recipe models.Recipe
+	query := "SELECT * FROM recipes WHERE id=$1"
+	err = r.db.Get(&recipe, query, id)
+	if err != nil {
+		logrus.Errorf("recipe %d not found", id)
+		return err
+	}
+
+	if err != nil {
+		logrus.Errorf("checking recipe exictance error: %s", err)
+	}
+
+	return err
+}

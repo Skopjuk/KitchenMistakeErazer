@@ -9,3 +9,7 @@ type InsertRecipeToRecipeVersion interface {
 type GetLatestVersionOfRecipe interface {
 	GetLatestVersionOfRecipe(recipeId int) (lastVersion uint, err error)
 }
+
+type DeleteRecipeVersion interface {
+	DeleteRecipeVersion(id int) error
+}
