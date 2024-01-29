@@ -1,6 +1,7 @@
 package recipes_handlers
 
 import (
+	"KitchenMistakeErazer/backend/handlers"
 	"KitchenMistakeErazer/backend/repository"
 	"KitchenMistakeErazer/backend/usecases/recipes"
 	"fmt"
@@ -109,7 +110,7 @@ func (r *RecipesHandler) GetAllRecipes(c echo.Context) error {
 }
 
 func (r *RecipesHandler) UpdateRecipe(c echo.Context) error {
-	idInt, err := getIdFromEndpoint(c)
+	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
@@ -157,7 +158,7 @@ func (r *RecipesHandler) UpdateRecipe(c echo.Context) error {
 }
 
 func (r *RecipesHandler) DeleteRecipe(c echo.Context) error {
-	idInt, err := getIdFromEndpoint(c)
+	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error": "user id was not parsed from link",
@@ -180,18 +181,4 @@ func (r *RecipesHandler) DeleteRecipe(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "recipe delete successfully",
 	})
-}
-
-func getIdFromEndpoint(c echo.Context) (int, error) {
-	id := c.Param("id")
-
-	idInt, err := strconv.Atoi(id)
-	if err != nil {
-		logrus.Errorf("error of converting id to int. id: %s", id)
-		return 0, c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": fmt.Sprintf("id %d can not be parsed", idInt),
-		})
-	}
-
-	return idInt, nil
 }

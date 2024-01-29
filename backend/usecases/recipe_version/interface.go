@@ -13,3 +13,7 @@ type GetLatestVersionOfRecipe interface {
 type DeleteRecipeVersion interface {
 	DeleteRecipeVersion(id int) error
 }
+
+type ShowAllVersionsOfRecipe interface {
+	ShowAllVersionsOfRecipe(id int) (allRecipeVersions []models.RecipeVersion, err error)
+}

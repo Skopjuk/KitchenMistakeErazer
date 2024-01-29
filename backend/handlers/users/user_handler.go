@@ -1,6 +1,7 @@
 package users
 
 import (
+	"KitchenMistakeErazer/backend/handlers"
 	"KitchenMistakeErazer/backend/repository"
 	"KitchenMistakeErazer/backend/usecases/users"
 	"fmt"
@@ -106,7 +107,7 @@ func (u *UsersHandler) GetAllUsers(c echo.Context) error {
 func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
 	var input users.UpdateUserAttributes
 
-	idInt, err := getIdFromEndpoint(c)
+	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
@@ -155,7 +156,7 @@ func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
 }
 
 func (u *UsersHandler) DeleteUser(c echo.Context) error {
-	idInt, err := getIdFromEndpoint(c)
+	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
@@ -185,7 +186,7 @@ func (u *UsersHandler) DeleteUser(c echo.Context) error {
 
 func (u *UsersHandler) UpdateUsersPassword(c echo.Context) error {
 	var input PasswordUpdateAttributes
-	idInt, err := getIdFromEndpoint(c)
+	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
@@ -219,18 +220,4 @@ func (u *UsersHandler) UpdateUsersPassword(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "password changed successfully",
 	})
-}
-
-func getIdFromEndpoint(c echo.Context) (int, error) {
-	id := c.Param("id")
-
-	idInt, err := strconv.Atoi(id)
-	if err != nil {
-		logrus.Errorf("error of converting id to int. id: %s", id)
-		return 0, c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": fmt.Sprintf("id %d can not be parsed", idInt),
-		})
-	}
-
-	return idInt, nil
 }

@@ -55,3 +55,17 @@ func (r *RecipeVersionRepository) GetLatestVersionOfRecipe(recipeId int) (lastVe
 
 	return lastVersion, err
 }
+
+func (r *RecipeVersionRepository) ShowAllVersionsOfRecipe(id int) (allRecipeVersions []models.RecipeVersion, err error) {
+	query := "SELECT * FROM recipe_versions WHERE recipe_id=$1"
+	err = r.db.Select(&allRecipeVersions, query, id)
+	if err != nil {
+		logrus.Errorf("error while selecting recipes versions from database")
+	}
+	//if len(*allRecipeVersions) < 1 {
+	//	logrus.Errorf("no versions in recipe version table")
+	//	return nil, errors.New("no versions in recipe version table")
+	//}
+
+	return allRecipeVersions, err
+}
