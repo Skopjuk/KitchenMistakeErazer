@@ -1,4 +1,4 @@
-CREATE TABLE recipes
+CREATE TABLE IF NOT EXISTS recipes
 (
     id SERIAL PRIMARY KEY,
     user_id BIGINT,
@@ -9,7 +9,7 @@ CREATE TABLE recipes
 
 );
 
-CREATE TABLE recipe_versions
+CREATE TABLE IF NOT EXISTS recipe_versions
 (
     id SERIAL PRIMARY KEY,
     recipe_name VARCHAR(50),

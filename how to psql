@@ -1,3 +1,4 @@
 docker exec -it 4eaccb342014 /bin/bash
 psql -U postgres kitchen_users
- migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5436/kitchen_users?sslmode=disable' up
+migrate create -ext sql -dir ./schema -seq ingredients_init
+migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5436/kitchen_users?sslmode=disable' up

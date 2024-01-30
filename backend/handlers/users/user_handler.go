@@ -74,7 +74,6 @@ func (u *UsersHandler) SignUp(c echo.Context) error {
 	}
 
 	return nil
-
 }
 
 func (u *UsersHandler) GetAllUsers(c echo.Context) error {

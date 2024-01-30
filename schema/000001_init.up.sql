@@ -1,4 +1,4 @@
-CREATE TABLE kitchen_users
+CREATE TABLE IF NOT EXISTS kitchen_users
 (
     id         SERIAL PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
