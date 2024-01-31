@@ -43,6 +43,5 @@ func (m *MeasurementUnitHandler) InsertMeasurementUnit(c echo.Context) (err erro
 		logrus.Errorf("troubles with sending http status: %s", err)
 	}
 
-	return nil
-
+	return err
 }

@@ -2,6 +2,7 @@ package server
 
 import (
 	"KitchenMistakeErazer/backend/container"
+	"KitchenMistakeErazer/backend/handlers/ingredient_handlers"
 	"KitchenMistakeErazer/backend/handlers/measurement_unit_handlers"
 	"KitchenMistakeErazer/backend/handlers/recipe_version_handlers"
 	"KitchenMistakeErazer/backend/handlers/recipes_handlers"
@@ -28,6 +29,7 @@ func routes(e *echo.Echo, container container.Container) {
 	recipes_handlers.NewRecipesHandler(&container).SetRoutes(e.Group("/recipe"))
 	recipe_version_handlers.NewRecipesVersionHandler(&container).SetRoutes(e.Group("/recipe_versions"))
 	measurement_unit_handlers.NewMeasurementUnitHandler(&container).SetRoutes(e.Group("/units"))
+	ingredient_handlers.NewIngredientsHandler(&container).SetRoutes(e.Group("/ingredient"))
 }
 
 func (s *Server) Shutdown(ctx context.Context) error {

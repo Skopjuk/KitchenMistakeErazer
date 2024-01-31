@@ -1,5 +1,7 @@
 package ingredients
 
+import "KitchenMistakeErazer/backend/models"
+
 type AddIngredient interface {
-	AddIngredient(name string, amount float32, measurementUnit string) error
+	AddIngredient(ingredient models.Ingredient) error
 }
