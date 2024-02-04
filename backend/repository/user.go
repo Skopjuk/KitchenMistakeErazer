@@ -15,15 +15,24 @@ func NewUsersRepository(db *sqlx.DB) *UsersRepository {
 	return &UsersRepository{db: db}
 }
 
-func (u *UsersRepository) InsertUser(user models.User) error {
-	query := "INSERT INTO kitchen_users (first_name, last_name, email, password_digest) values ($1, $2, $3, $4)"
-	_, err := u.db.Query(query, user.FirstName, user.LastName, user.Email, user.PasswordDigest)
+func (u *UsersRepository) InsertUser(user models.User) (id int, err error) {
+	var idList []int
+	query := "INSERT INTO kitchen_users (first_name, last_name, email, password_digest) values ($1, $2, $3, $4) RETURNING id"
+	row, err := u.db.Query(query, user.FirstName, user.LastName, user.Email, user.PasswordDigest)
 	if err != nil {
 		logrus.Errorf("error while inserting user")
-		return err
+		return 0, err
 	}
 
-	return nil
+	for row.Next() {
+		if err := row.Scan(&id); err != nil {
+			logrus.Errorf("error while scanning row from db: %s", err)
+			return 0, err
+		}
+		idList = append(idList, id)
+	}
+
+	return idList[0], nil
 }
 
 func (u *UsersRepository) ShowAllUsers(skip, paginationLimit string) (usersList []models.User, err error) {
@@ -75,4 +84,14 @@ func (u *UsersRepository) UpdatePassword(password []byte, id int) (err error) {
 	}
 
 	return err
+}
+
+func (u *UsersRepository) GetUserByEmail(email string) (user models.User, err error) {
+	query := "SELECT * FROM kitchen_users WHERE email=$1 LIMIT 1"
+	err = u.db.Get(&user, query, email)
+	if err != nil {
+		logrus.Errorf("error while tring to find user in db: %s", err)
+	}
+
+	return user, err
 }

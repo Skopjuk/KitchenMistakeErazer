@@ -12,18 +12,18 @@ func NewCreateUserProfile(repository InsertUser) *CreateUserProfile {
 	return &CreateUserProfile{repository: repository}
 }
 
-func (c *CreateUserProfile) Execute(attributes UserAttributes) (err error) {
+func (c *CreateUserProfile) Execute(attributes UserAttributes) (id int, err error) {
 	err = ParametersValidation(attributes)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	err = c.repository.InsertUser(models.User{
+	id, err = c.repository.InsertUser(models.User{
 		FirstName:      attributes.FirstName,
 		LastName:       attributes.LastName,
 		Email:          attributes.Email,
 		PasswordDigest: PasswordHashing(attributes.Password),
 	})
 
-	return err
+	return id, err
 }

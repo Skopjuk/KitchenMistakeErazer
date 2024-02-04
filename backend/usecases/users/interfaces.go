@@ -3,7 +3,7 @@ package users
 import "KitchenMistakeErazer/backend/models"
 
 type InsertUser interface {
-	InsertUser(user models.User) (err error)
+	InsertUser(user models.User) (id int, err error)
 }
 
 type UpdateUser interface {
@@ -24,4 +24,8 @@ type ShowAllUsers interface {
 
 type GetUserById interface {
 	GetUserById(id int) (user models.User, err error)
+}
+
+type GetUserByEmail interface {
+	GetUserByEmail(email string) (user models.User, err error)
 }
