@@ -3,6 +3,7 @@ module KitchenMistakeErazer
 go 1.21.3
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/labstack/echo/v4 v4.11.3
 	github.com/lib/pq v1.2.0

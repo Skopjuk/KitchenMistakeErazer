@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS recipes
 (
     id SERIAL PRIMARY KEY,
-    user_id BIGINT,
+    user_id BIGINT NOT NULL,
     created_at  TIMESTAMP NOT NULL DEFAULT current_timestamp,
     CONSTRAINT fk_user_id
         FOREIGN KEY (user_id)
@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS recipes
 CREATE TABLE IF NOT EXISTS recipe_versions
 (
     id SERIAL PRIMARY KEY,
-    recipe_name VARCHAR(50),
+    recipe_name VARCHAR(50) NOT NULL,
     description VARCHAR,
-    recipe_version_number BIGINT,
-    recipe_id BIGINT,
+    recipe_version_number BIGINT NOT NULL,
+    recipe_id BIGINT NOT NULL,
     sourness INT,
     saltiness INT,
     acidity INT,
