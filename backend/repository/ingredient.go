@@ -23,3 +23,13 @@ func (i IngredientRepository) AddIngredient(ingredient models.Ingredient) error 
 
 	return err
 }
+
+func (i IngredientRepository) DeleteIngredient(id int) error {
+	query := "DELETE FROM ingredients WHERE id=$1"
+	_, err := i.db.Query(query, id)
+	if err != nil {
+		logrus.Errorf("error while deleting ingredient to DB: %s", err)
+	}
+
+	return err
+}
