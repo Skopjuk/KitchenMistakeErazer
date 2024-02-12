@@ -23,6 +23,9 @@ func (c *ChangeRecipe) Execute(attributes RecipeAttributes, id int) error {
 	}
 
 	lastRecipeVersion, err := c.recipeVersionRepository.GetLatestVersionOfRecipe(id)
+	if err != nil {
+		return err
+	}
 
 	recipe := models.Recipe{
 		UserId: attributes.UserId,
@@ -63,23 +66,23 @@ func checkIfRecipeAttributesValid(attributes RecipeAttributes) (err error) {
 	} else if len(attributes.Description) < 100 {
 		return errors.New("recipe description should be at least 100 symbols")
 	} else if attributes.Sourness > 6 {
-		errors.New("sourness can not be more then 6")
+		return errors.New("sourness can not be more then 6")
 	} else if attributes.Saltiness > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Acidity > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Sweetness > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Hot > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Calories > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Fat > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Protein > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	} else if attributes.Carbs > 6 {
-		errors.New("saltiness can not be more then 6")
+		return errors.New("saltiness can not be more then 6")
 	}
 
 	return nil

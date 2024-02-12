@@ -46,6 +46,11 @@ func (u *UsersHandler) GetAllUsers(c echo.Context) error {
 	getAll := users.NewShowUsers(usersRepository)
 
 	users, err := getAll.Execute(skip, paginationLimit)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err,
+		})
+	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"user": users,

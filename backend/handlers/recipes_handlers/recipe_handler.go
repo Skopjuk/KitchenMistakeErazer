@@ -79,7 +79,7 @@ func (r *RecipesHandler) AddRecipe(c echo.Context) error {
 		"added_recipe": input,
 	})
 
-	return nil
+	return err
 }
 
 func (r *RecipesHandler) GetAllRecipes(c echo.Context) error {
@@ -150,11 +150,9 @@ func (r *RecipesHandler) UpdateRecipe(c echo.Context) error {
 		})
 	}
 
-	err = c.JSON(http.StatusOK, map[string]interface{}{
+	return c.JSON(http.StatusOK, map[string]interface{}{
 		"updated_recipe": input,
 	})
-
-	return nil
 }
 
 func (r *RecipesHandler) DeleteRecipe(c echo.Context) error {

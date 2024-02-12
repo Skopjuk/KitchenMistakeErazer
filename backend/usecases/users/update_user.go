@@ -19,7 +19,7 @@ func NewUpdateUserProfile(repository UpdateUser) *UpdateUserProfile {
 type UpdateUserAttributes struct {
 	FirstName string `json:"first_name,omitempty"`
 	LastName  string `json:"last_name,omitempty"`
-	Email     string `json:"email, omitempty"`
+	Email     string `json:"email,omitempty"`
 }
 
 func (c *UpdateUserProfile) Execute(attributes UpdateUserAttributes, id int) error {
