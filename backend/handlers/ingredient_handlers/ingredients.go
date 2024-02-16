@@ -16,4 +16,5 @@ func NewIngredientsHandler(container *container.Container) *IngredientsHandler {
 func (i *IngredientsHandler) SetRoutes(g *echo.Group) {
 	g.POST("/", i.AddIngredient)
 	g.DELETE("/:id", i.RemoveIngredient)
+	g.PATCH("/:id", i.UpdateIngredientHandler)
 }

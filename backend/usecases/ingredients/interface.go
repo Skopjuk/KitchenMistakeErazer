@@ -9,3 +9,7 @@ type AddIngredient interface {
 type DeleteIngredient interface {
 	DeleteIngredient(id int) error
 }
+
+type ChangeIngredient interface {
+	ChangeIngredient(id int, ingredient models.Ingredient) error
+}

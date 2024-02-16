@@ -33,3 +33,13 @@ func (i IngredientRepository) DeleteIngredient(id int) error {
 
 	return err
 }
+
+func (i IngredientRepository) ChangeIngredient(id int, ingredient models.Ingredient) error {
+	query := "UPDATE ingredients SET name=$1, amount=$2, measurement_unit_id=$3 WHERE id=$4"
+	_, err := i.db.Query(query, ingredient.Name, ingredient.Amount, ingredient.MeasurementUnitId, id)
+	if err != nil {
+		logrus.Errorf("error whilt changing ingredient in DB:%s", err)
+	}
+
+	return err
+}

@@ -59,3 +59,32 @@ func (i *IngredientsHandler) RemoveIngredient(c echo.Context) error {
 		"status": "ingredient deleted successfully",
 	})
 }
+
+func (i *IngredientsHandler) UpdateIngredientHandler(c echo.Context) error {
+	id, err := handlers.GetIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err,
+		})
+	}
+
+	var input models.Ingredient
+	if err := c.Bind(&input); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err,
+		})
+	}
+
+	repository := repository.NewIngredientRepository(i.container.DB)
+	newUpdateIngredient := ingredients.NewUpdateIngredient(repository)
+	err = newUpdateIngredient.Execute(input, id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err,
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "ingredient updated successfully",
+	})
+}
