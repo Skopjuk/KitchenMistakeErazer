@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strings"
 )
 
 func (i *IngredientsHandler) AddIngredient(c echo.Context) error {
@@ -76,11 +77,17 @@ func (i *IngredientsHandler) UpdateIngredientHandler(c echo.Context) error {
 	}
 
 	repository := repository.NewIngredientRepository(i.container.DB)
-	newUpdateIngredient := ingredients.NewUpdateIngredient(repository)
+	newUpdateIngredient := ingredients.NewUpdateIngredient(*repository)
 	err = newUpdateIngredient.Execute(input, id)
+	if err != nil && strings.Contains(err.Error(), "sql: no rows in result set") {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "user wasn't found",
+		})
+	}
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": err,
+			"error": "internal error",
 		})
 	}
 

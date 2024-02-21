@@ -43,3 +43,13 @@ func (i IngredientRepository) ChangeIngredient(id int, ingredient models.Ingredi
 
 	return err
 }
+
+func (i IngredientRepository) FindIngredient(id int) (ingredient models.Ingredient, err error) {
+	query := "SELECT * FROM ingredients WHERE id=$1"
+	err = i.db.Get(&ingredient, query, id)
+	if err != nil {
+		logrus.Errorf("error while looking for ingredient in DB:%s", err)
+	}
+
+	return ingredient, err
+}

@@ -13,3 +13,7 @@ type DeleteIngredient interface {
 type ChangeIngredient interface {
 	ChangeIngredient(id int, ingredient models.Ingredient) error
 }
+
+type FindIngredient interface {
+	FindIngredient(id int) (ingredient models.Ingredient, err error)
+}
