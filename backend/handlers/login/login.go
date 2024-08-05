@@ -3,6 +3,7 @@ package login
 import (
 	"KitchenMistakeErazer/backend/container"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type SignInHandler struct {
@@ -14,5 +15,8 @@ func NewSignInHandler(container *container.Container) *SignInHandler {
 }
 
 func (u *SignInHandler) SetRoutes(g *echo.Group) {
-	g.POST("/", u.SignIn)
+	//fileServer := http.FileServer(http.Dir("./static"))
+	//
+	//g.GET("/", echo.WrapHandler(http.StripPrefix("/", fileServer)))
+	g.Use(middleware.Static("/Users/ksenia/KitchenMistakeErazer/static"))
 }

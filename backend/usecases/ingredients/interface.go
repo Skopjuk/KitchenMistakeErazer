@@ -17,3 +17,7 @@ type ChangeIngredient interface {
 type FindIngredient interface {
 	FindIngredient(id int) (ingredient models.Ingredient, err error)
 }
+
+type FindAllMeasurementUnitsOfIngredient interface {
+	FindAllMeasurementUnitsOfIngredient(id int) (measurementUnits []int, err error)
+}

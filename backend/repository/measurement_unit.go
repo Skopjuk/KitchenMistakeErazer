@@ -22,3 +22,13 @@ func (m *MeasurementUnitsRepository) AddMeasurementUnit(unitName string) error {
 
 	return err
 }
+
+func (m *MeasurementUnitsRepository) DeleteMeasurementUnit(id int) error {
+	query := "DELETE FROM measurements WHERE id=$1"
+	_, err := m.db.Query(query, id)
+	if err != nil {
+		logrus.Errorf("error while attempt to delete measurement unit from DB")
+	}
+
+	return err
+}
