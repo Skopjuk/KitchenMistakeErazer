@@ -60,7 +60,7 @@
                     .getIdToken()
                     .then((idToken) => {
                         // redirect to premium page
-                        window.location.href = `http://localhost:8080/premium?auth-token=${idToken}`;
+                        window.location.href = `http://localhost:8080/premium/?auth-token=${idToken}`;
                     })
                     .catch((err) => {
                         document.querySelector(

@@ -15,7 +15,7 @@ func (p PremiumHandler) PremiumHandler(c echo.Context) error {
 		return errors.New("Unauthorized")
 	}
 
-	tmpl, err := template.ParseFiles("/Users/ksenia/KitchenMistakeErazer/static/premium.html")
+	tmpl, err := template.ParseFiles("./static/premium.html")
 	if err != nil {
 		logrus.Printf("Error parsing templates: %v\n", err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{

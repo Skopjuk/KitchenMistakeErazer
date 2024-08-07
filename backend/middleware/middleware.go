@@ -102,7 +102,7 @@ func AuthMiddleWare(client *auth.Client) func(echo2 echo.HandlerFunc) echo.Handl
 
 			// Add token to the request context
 			c.Set("verifiedToken", verifiedToken)
-			return nil
+			return next(c)
 		})
 	}
 }
