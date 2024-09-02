@@ -6,23 +6,14 @@ import (
 	"context"
 	"errors"
 	"firebase.google.com/go/v4/auth"
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
+	"strings"
 )
-
-//func UserIdentityMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-//	return func(c echo.Context) error {
-//		err := userIdentity(c)
-//		if err != nil {
-//			return err
-//		}
-//
-//		return next(c)
-//	}
-//}
 
 func userIdentity(c echo.Context, client auth.Client) error {
 	params, err := url.ParseQuery(c.Request().URL.RawQuery)
@@ -80,18 +71,17 @@ func AuthMiddleWare(client *auth.Client) func(echo2 echo.HandlerFunc) echo.Handl
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return echo.HandlerFunc(func(c echo.Context) error {
 			// parse Query parameters
-			params, err := url.ParseQuery(c.Request().URL.RawQuery)
-			if err != nil {
-				http.Error(c.Response(), "Bad Request", http.StatusBadRequest)
-				// log.Fatalf("")
-				return errors.New("Bad Request")
-			}
+			auth := c.Request().Header.Get("Authorization")
 
-			idToken := params.Get("auth-token")
-			if idToken == "" {
+			parts := strings.Split(auth, " ")
+
+			if len(parts) != 2 {
 				http.Error(c.Response(), "Unauthorized", http.StatusUnauthorized)
 				return errors.New("Unauthorized")
 			}
+
+			idToken := parts[1]
+			fmt.Println(idToken)
 
 			// verify ID token
 			verifiedToken, err := client.VerifyIDToken(context.Background(), idToken)

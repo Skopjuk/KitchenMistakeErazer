@@ -17,6 +17,7 @@
 </form>
 <p>Or <a href="signup.html">Sign up</a></p>
 <button id="google-signin">Sign In with Google</button>
+<button id="github-signin">Sign In with Github</button>
 
 <script type="module">
     // Import the functions you need from the SDKs you need
@@ -26,6 +27,7 @@
         signInWithEmailAndPassword,
         signInWithPopup,
         GoogleAuthProvider,
+        GithubAuthProvider,
         onAuthStateChanged,
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
@@ -44,6 +46,8 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
+    const githubProvider = new GithubAuthProvider();
+    githubProvider.addScope('repo')
     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     provider.setCustomParameters({
         'firebase-adminsdk': 'firebase-adminsdk-tj52z@kitchenmistakeerazer.iam.gserviceaccount.com'
@@ -60,10 +64,27 @@
 
             try {
                 const idToken = await user.getIdToken();
-                window.location.href = `http://localhost:8080/premium?auth-token=${idToken}`;
+                const response = await fetch("http://localhost:8080/premium/", {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${idToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    console.log("authenticated and redirected to users")
+                    await fetch("http://localhost:8080/user/", {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `Bearer ${idToken}`
+                        }
+                    })
+                    window.location.href = "/user/";
+                } else {
+                    console.error("Failed to authorize token");
+                }
             } catch (err) {
-                alert("Failed to authorize token");
-                window.location.href = 'http://localhost:8080/login';
+              //  alert("Failed to authorize token");
                 console.error("Token error: ", err);
             }
         } catch (err) {
@@ -80,6 +101,43 @@
             const user = result.user;
 
             try {
+                    const idToken = await user.getIdToken();
+                    const response = await fetch("http://localhost:8080/premium/", {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `Bearer ${idToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        console.log("authenticated and redirected to users")
+                        await fetch("http://localhost:8080/users/", {
+                            method: "GET",
+                            headers: {
+                                'Authorization': `Bearer ${idToken}`
+                            }
+                        })
+                        window.location.href = "/user/";
+                    } else {
+                        console.error("Failed to authorize token");
+                    }
+                } catch (err) {
+                    //  alert("Failed to authorize token");
+                    console.error("Token error: ", err);
+            }
+        } catch (error) {
+            console.error("Google Sign-in error: ", error);
+        }
+
+    }
+
+    async function loginWithGithub(e) {
+        e.preventDefault();
+        try {
+            const result = await signInWithPopup(auth, githubProvider);
+            const user = result.user;
+
+            try {
                 const idToken = await user.getIdToken();
                 window.location.href = `http://localhost:8080/premium?auth-token=${idToken}`;
             } catch (err) {
@@ -92,6 +150,7 @@
         }
     }
 
+
     function clearForm() {
         document.querySelector("#email").value = "";
         document.querySelector("#password").value = "";
@@ -99,6 +158,7 @@
 
     document.getElementById("signin").onclick = login;
     document.getElementById("google-signin").onclick = loginWithGoogle;
+    document.getElementById("github-signin").onclick = loginWithGithub;
 
     // checking if the user is logged in
     onAuthStateChanged(auth, (user) => {

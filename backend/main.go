@@ -21,7 +21,7 @@ func main() {
 	}
 
 	containerInstance := container.NewContainer(config, logging)
-	opt := option.WithCredentialsFile("/Users/ksenia/KitchenMistakeErazer/backend/credentials.json")
+	opt := option.WithCredentialsFile("./backend/credentials.json")
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		logging.Fatalf("Error initializing app: %v\n", err)
