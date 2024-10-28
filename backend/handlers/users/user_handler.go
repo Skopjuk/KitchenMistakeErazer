@@ -174,3 +174,26 @@ func (u *UsersHandler) UpdateUsersPassword(c echo.Context) error {
 		"status": "password changed successfully",
 	})
 }
+
+func (u *UsersHandler) GetUserById(c echo.Context) error {
+	idInt, err := handlers.GetIdFromEndpoint(c)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
+		})
+	}
+
+	usersRepository := repository.NewUsersRepository(u.container.DB)
+	newGetUserById := users.NewGetUserByID(usersRepository)
+	user, err := newGetUserById.Execute(idInt)
+	if err != nil {
+		logrus.Errorf("problem while extracting user from DB: %s", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": fmt.Sprintf("problem while extracting user from DB: %s", err),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"user": user,
+	})
+}

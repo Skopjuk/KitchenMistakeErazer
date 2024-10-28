@@ -18,4 +18,5 @@ func (u *UsersHandler) SetRoutes(g *echo.Group) {
 	g.PUT("/:id", u.UpdateUser)
 	g.DELETE("/:id", u.DeleteUser)
 	g.PUT("/change_password/:id", u.UpdateUsersPassword)
+	g.GET("/:id", u.GetUserById)
 }
