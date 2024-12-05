@@ -1,0 +1,38 @@
+@startuml
+    title Authorization
+
+    actor User
+
+    == Sign up ==
+
+        box Frontend
+            User -> UI: sign up
+        end box
+
+    == Sign in ==
+
+
+
+
+    box Frontend
+        User -> UI: login
+    end box
+
+    box Firebase
+        UI -> Firebase: signInWithEmailAndPassword
+        UI <-- Firebase: JWT token
+    end box
+
+    box Backend
+        UI -> Backend: POST /auth/sign_in
+        Backend -> "firebase module": verifyIdToken
+        Backend <-- "firebase module": decoded token
+        Backend -> Backend: get_or_create_user
+        Backend -> Backend: create_session
+        Backend -> Backend: create_auth
+
+        Backend -> UI: session
+    end box
+
+    Backend -[hidden]-> Firebase: verifyIdToken
+@enduml
