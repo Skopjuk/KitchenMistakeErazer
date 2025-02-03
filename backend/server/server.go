@@ -9,6 +9,7 @@ import (
 	"KitchenMistakeErazer/backend/handlers/recipe_version_handlers"
 	"KitchenMistakeErazer/backend/handlers/recipes_handlers"
 	"KitchenMistakeErazer/backend/handlers/registration"
+	"KitchenMistakeErazer/backend/handlers/user"
 	"KitchenMistakeErazer/backend/handlers/users"
 	"context"
 	"github.com/labstack/echo/v4"
@@ -28,7 +29,8 @@ func Run(port string, containerInstance container.Container) error {
 }
 
 func routes(e *echo.Echo, container container.Container) {
-	users.NewUsersHandler(&container).SetRoutes(e.Group("/user", handlers.UserIdentityMiddleware))
+	users.NewUsersHandler(&container).SetRoutes(e.Group("/users", handlers.UserIdentityMiddleware))
+	user.NewUserHandler(&container).SetRoutes(e.Group("/user", handlers.UserIdentityMiddleware))
 	recipes_handlers.NewRecipesHandler(&container).SetRoutes(e.Group("/recipe"))
 	recipe_version_handlers.NewRecipesVersionHandler(&container).SetRoutes(e.Group("/recipe_versions"))
 	measurement_unit_handlers.NewMeasurementUnitHandler(&container).SetRoutes(e.Group("/units"))

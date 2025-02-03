@@ -1,4 +1,4 @@
-package users
+package user
 
 import (
 	"KitchenMistakeErazer/backend/handlers"
@@ -8,7 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 )
 
 var (
@@ -25,27 +24,18 @@ type PasswordUpdateAttributes struct {
 	Password string `json:"password,omitempty"`
 }
 
-func (u *UsersHandler) GetAllUsers(c echo.Context) error {
-	pageNum := c.QueryParam("page")
-	if pageNum == "" {
-		pageNum = "1"
-	}
-
-	page, err := strconv.Atoi(pageNum)
+func (u *UserHandler) GetUserByID(c echo.Context) error {
+	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
-		logrus.Errorf("error while converting page number to int: %s", err)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": "error while parsing url",
+			"error": fmt.Sprintf("users id %d can not be parsed", idInt),
 		})
 	}
 
-	skip := strconv.Itoa((page - 1) * 10)
-	logrus.Info("attempt to get users list from db")
-
 	usersRepository := repository.NewUsersRepository(u.container.DB)
-	getAll := users.NewShowUsers(usersRepository)
+	getAll := users.NewGetUserByID(usersRepository)
 
-	users, err := getAll.Execute(skip, paginationLimit)
+	user, err := getAll.Execute(idInt)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err,
@@ -53,11 +43,11 @@ func (u *UsersHandler) GetAllUsers(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"user": users,
+		"user": user,
 	})
 }
 
-func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
+func (u *UserHandler) UpdateUser(c echo.Context) (err error) {
 	var input users.UpdateUserAttributes
 
 	idInt, err := handlers.GetIdFromEndpoint(c)
@@ -108,7 +98,7 @@ func (u *UsersHandler) UpdateUser(c echo.Context) (err error) {
 	return err
 }
 
-func (u *UsersHandler) DeleteUser(c echo.Context) error {
+func (u *UserHandler) DeleteUser(c echo.Context) error {
 	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -137,7 +127,7 @@ func (u *UsersHandler) DeleteUser(c echo.Context) error {
 	return err
 }
 
-func (u *UsersHandler) UpdateUsersPassword(c echo.Context) error {
+func (u *UserHandler) UpdateUsersPassword(c echo.Context) error {
 	var input PasswordUpdateAttributes
 	idInt, err := handlers.GetIdFromEndpoint(c)
 	if err != nil {
